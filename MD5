@@ -1,4 +1,4 @@
-0bf3b2121ff92e6f7971c00a41d18544 *DESCRIPTION
+14bcc5e2e5fd2e3a384e143e20102ec4 *DESCRIPTION
 d656f1a505f1d34316a3e21dd961f815 *LICENSE
 42852d395019de3609a5d68cc7960f39 *NAMESPACE
 26c649d6fa6b1cf8c01a0b4c08ee01f8 *R/build_mesh.R
@@ -13,7 +13,7 @@ d1340210b8548ab5fcfb44bed9983def *R/roxygentags.R
 a603ed10506d40986e4a6b11aaf21247 *build/vignette.rds
 865ce52ae405e32be59e01880dc98891 *inst/doc/disaggregation.R
 d423907e0e382e292b433727ef85ca58 *inst/doc/disaggregation.Rmd
-bc8e9f3f444de722b433af565303999c *inst/doc/disaggregation.html
+ebbf0f7349a902ef712476ee129df9c8 *inst/doc/disaggregation.html
 d436a56eb6b4fd1afd3fe3fbc1eaeff0 *man/as.disag.data.Rd
 3ed786b81dba3763a7baee063dc90cd6 *man/build_mesh.Rd
 0e6780eb75660e4881e3ed07bd48682e *man/dummy.Rd
@@ -29,13 +29,13 @@ cc258c38aec68b43c3061c306d1ab4d7 *man/parallelExtract.Rd
 d7637fed83f04daee90e667a3407cef1 *man/predict.fit.result.Rd
 2762617e483db4f8c316a95c1bc6ad49 *man/predict_model.Rd
 79787af2578a0b2ccd82c417eb57e48d *man/predict_uncertainty.Rd
-b7fb7957605ff678454636dc59b80282 *man/prepare_data.Rd
+fb5e8f808c02737461c881ca756c0c77 *man/prepare_data.Rd
 8eeae6effed22cc2f4f80614785350e4 *man/print.disag.data.Rd
 06e4f5589973e2344219b6f15edcfb09 *man/print.fit.result.Rd
 e1f7f2a22ecbc4d51e42a12318d67c73 *man/summary.disag.data.Rd
 e63a507da653ce922e521c0ecbe612a0 *man/summary.fit.result.Rd
 6f86b365eeed37e537525a1af4089a17 *src/Makevars.win
-9e8c43528d15707a0f4a22f8254b806c *src/disaggregation.cpp
+940fd327b8630e0d5dd99a228e572648 *src/disaggregation.cpp
 b86d6809178d21c28892446bc53e819a *tests/testthat.R
 9ef342dfafbe949c68ede87921269f64 *tests/testthat/test-build-mesh.R
 faff33b7a839863c88aad5f79471e64e *tests/testthat/test-extract.R
