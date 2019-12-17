@@ -1,4 +1,4 @@
-14bcc5e2e5fd2e3a384e143e20102ec4 *DESCRIPTION
+f24c4c73cae292d007759a3b3cb2a6b2 *DESCRIPTION
 d656f1a505f1d34316a3e21dd961f815 *LICENSE
 42852d395019de3609a5d68cc7960f39 *NAMESPACE
 26c649d6fa6b1cf8c01a0b4c08ee01f8 *R/build_mesh.R
@@ -13,7 +13,7 @@ d1340210b8548ab5fcfb44bed9983def *R/roxygentags.R
 a603ed10506d40986e4a6b11aaf21247 *build/vignette.rds
 865ce52ae405e32be59e01880dc98891 *inst/doc/disaggregation.R
 d423907e0e382e292b433727ef85ca58 *inst/doc/disaggregation.Rmd
-ebbf0f7349a902ef712476ee129df9c8 *inst/doc/disaggregation.html
+343d88f911c7c9c81b266cb8ffff5437 *inst/doc/disaggregation.html
 d436a56eb6b4fd1afd3fe3fbc1eaeff0 *man/as.disag.data.Rd
 3ed786b81dba3763a7baee063dc90cd6 *man/build_mesh.Rd
 0e6780eb75660e4881e3ed07bd48682e *man/dummy.Rd
@@ -39,10 +39,10 @@ e63a507da653ce922e521c0ecbe612a0 *man/summary.fit.result.Rd
 b86d6809178d21c28892446bc53e819a *tests/testthat.R
 9ef342dfafbe949c68ede87921269f64 *tests/testthat/test-build-mesh.R
 faff33b7a839863c88aad5f79471e64e *tests/testthat/test-extract.R
-5d926c5b0f72999e0710ba59bfecf014 *tests/testthat/test-fit-model.R
+d0fda02d69e7fd37c8d03cd3bac8ad28 *tests/testthat/test-fit-model.R
 bef24a2b3447064ca9f8d6914a751f68 *tests/testthat/test-matching.R
-d6fc366ca49d33ee5cf9672992341bf5 *tests/testthat/test-plotting.R
-9e5fbe850722c752afcbf918ea8a2ce6 *tests/testthat/test-predict-model.R
+52bc42075d65e71b2cf7ae3ab7ff1763 *tests/testthat/test-plotting.R
+b18154e5e42e3b01f214127c03a009fb *tests/testthat/test-predict-model.R
 12966088811e96b452c8203d56918fce *tests/testthat/test-prepare-data.R
 9f8ac56a8ca67316dfc0cd2f3a63e0bd *tests/testthat/test-summary.R
 d423907e0e382e292b433727ef85ca58 *vignettes/disaggregation.Rmd
