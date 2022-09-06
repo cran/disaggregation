@@ -154,8 +154,17 @@ predict_uncertainty <- function(model_output, newdata = NULL, predict_iid = FALS
   
   parameters <- model_output$obj$env$last.par.best
   
-  ch <- Matrix::Cholesky(model_output$sd_out$jointPrecision)
-  par_draws <- sparseMVN::rmvn.sparse(N, parameters, ch, prec = TRUE)
+  # If we have either of the random effects, we have the jointPrecision matrix.
+  #   but if we have neither, we don't get that matrix and should use the
+  #   covariance matrix instead
+  if(model_output$model_setup$iid | model_output$model_setup$field){
+    ch <- Matrix::Cholesky(model_output$sd_out$jointPrecision)
+    par_draws <- sparseMVN::rmvn.sparse(N, parameters, ch, prec = TRUE)
+  } else {
+    covariance_matrix <- Matrix::Matrix(model_output$sd_out$cov.fixed, sparse = TRUE)
+    ch <- Matrix::Cholesky(covariance_matrix)
+    par_draws <- sparseMVN::rmvn.sparse(N, parameters, ch, prec = FALSE)
+  }
   
   predictions <- list()
   
@@ -298,7 +307,13 @@ predict_single_raster <- function(model_parameters, objects, link_function) {
   }
   
   cov_by_betas <- raster::stack(covs_by_betas)
-  cov_contribution <- sum(cov_by_betas) + model_parameters$intercept
+  if(raster::nlayers(cov_by_betas) > 1){
+    sum_cov_by_betas <- sum(cov_by_betas)
+  } else { 
+    # With only 1 covariate, there's nothing to sum. Do this to avoid warnings.
+    sum_cov_by_betas <- cov_by_betas
+  }
+  cov_contribution <- sum_cov_by_betas + model_parameters$intercept
   
   linear_pred <- cov_contribution  
   

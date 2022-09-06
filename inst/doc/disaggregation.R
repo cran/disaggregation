@@ -3,10 +3,11 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   cache = TRUE,
-  fig.width = 7
+  fig.width = 7,
+  eval = TRUE
 )
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ---- echo = FALSE, eval = TRUE-----------------------------------------------
 isINLA <- requireNamespace('INLA', quietly = TRUE)
 
 ## -----------------------------------------------------------------------------
@@ -45,7 +46,7 @@ pop_raster <- rasterize(polygon_data, cov_stack, field = 'pop_per_cell')
 ## ---- fig.show='hold'---------------------------------------------------------
 polygon_data <- rgeos::gBuffer(polygon_data, byid = TRUE, width = 0)
 
-## ---- fig.show='hold'---------------------------------------------------------
+## ---- fig.show='hold', eval= isINLA-------------------------------------------
 data_for_model <- prepare_data(polygon_data,
                                cov_stack,
                                pop_raster,
@@ -58,7 +59,7 @@ data_for_model <- prepare_data(polygon_data,
                                na.action = TRUE,
                                ncores = 1)
 
-## ---- fig.show='hold'---------------------------------------------------------
+## ---- fig.show='hold', eval= isINLA-------------------------------------------
 plot(data_for_model)
 
 ## ---- fig.show='hold', eval=isINLA--------------------------------------------

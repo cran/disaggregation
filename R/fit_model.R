@@ -11,7 +11,7 @@
 #' \deqn{cases_j = \sum_{i \epsilon j} pred_i \times agg_i}{ casesj = \sum (predi x aggi)}
 #' \deqn{rate_j = \frac{\sum_{i \epsilon j} pred_i \times agg_i}{\sum_{i \epsilon j} agg_i}}{ratej = \sum(predi x aggi) / \sum (aggi)}
 #' 
-#' The different likelihood correspond to slightly different models (\eqn{y_j}{yi} is the repsonse count data):
+#' The different likelihood correspond to slightly different models (\eqn{y_j}{yi} is the response count data):
 #' \itemize{
 #'   \item Gaussian: 
 #'    If \eqn{\sigma} is the dispersion of the pixel data, \eqn{\sigma_j}{\sigmaj} is the dispersion of the polygon data, where 
@@ -26,7 +26,7 @@
 #' 
 #' Specify priors for the regression parameters, field and iid effect as a single list. Hyperpriors for the field 
 #' are given as penalised complexity priors you specify \eqn{\rho_{min}} and \eqn{\rho_{prob}} for the range of the field 
-#' where \eqn{P(\rho < \rho_{min}) = \rho_{prob}}, and \eqn{\sigma_{min}$ and $\sigma_{prob}} for the variation of the field 
+#' where \eqn{P(\rho < \rho_{min}) = \rho_{prob}}, and \eqn{\sigma_{min}} and \eqn{\sigma_{prob}} for the variation of the field 
 #' where \eqn{P(\sigma > \sigma_{min}) = \sigma_{prob}}. Also, specify pc priors for the iid effect
 #' 
 #' The \emph{family} and \emph{link} arguments are used to specify the likelihood and link function respectively. 
@@ -38,7 +38,7 @@
 #' 
 #' The \emph{iterations} argument specifies the maximum number of iterations the model can run for to find an optimal point.
 #' 
-#' The \emph{silent} argument can be used to publish/supress verbose output. Default TRUE.
+#' The \emph{silent} argument can be used to publish/suppress verbose output. Default TRUE.
 #' 
 #'
 #' @param data disag_data object returned by \code{\link{prepare_data}} function that contains all the necessary objects for the model fitting
@@ -201,7 +201,7 @@ disag_model <- function(data,
 #' \deqn{cases_j = \sum_{i \epsilon j} pred_i \times agg_i}{ casesj = \sum (predi x aggi)}
 #' \deqn{rate_j = \frac{\sum_{i \epsilon j} pred_i \times agg_i}{\sum_{i \epsilon j} agg_i}}{ratej = \sum(predi x aggi) / \sum (aggi)}
 #' 
-#' The different likelihood correspond to slightly different models (\eqn{y_j}{yi} is the repsonse count data):
+#' The different likelihood correspond to slightly different models (\eqn{y_j}{yi} is the response count data):
 #' \itemize{
 #'   \item Gaussian: 
 #'    If \eqn{\sigma} is the dispersion of the pixel data, \eqn{\sigma_j}{\sigmaj} is the dispersion of the polygon data, where 
@@ -214,10 +214,24 @@ disag_model <- function(data,
 #'    \deqn{dpois(y_j, cases_j)}{dpois(yj, casesj)} - predicts incidence count.
 #' }
 #' 
-#' Specify priors for the regression parameters, field and iid effect as a single list. Hyperpriors for the field 
+#' Specify priors for the regression parameters, field and iid effect as a single named list. Hyperpriors for the field 
 #' are given as penalised complexity priors you specify \eqn{\rho_{min}} and \eqn{\rho_{prob}} for the range of the field 
-#' where \eqn{P(\rho < \rho_{min}) = \rho_{prob}}, and \eqn{\sigma_{min}$ and $\sigma_{prob}} for the variation of the field 
-#' where \eqn{P(\sigma > \sigma_{min}) = \sigma_{prob}}. Also, specify pc priors for the iid effect
+#' where \eqn{P(\rho < \rho_{min}) = \rho_{prob}}, and \eqn{\sigma_{min}} and \eqn{\sigma_{prob}} for the variation of the field 
+#' where \eqn{P(\sigma > \sigma_{min}) = \sigma_{prob}}. Also, specify pc priors for the iid effect.
+#' 
+#' The precise names and default values for these priors are:
+#' \itemize{
+#' \item priormean_intercept: 0
+#' \item priorsd_intercept: 10.0
+#' \item priormean_slope: 0.0
+#' \item priorsd_slope: 0.5
+#' \item prior_rho_min: A third the length of the diagonal of the bounding box.
+#' \item prior_rho_prob: 0.1
+#' \item prior_sigma_max: sd(response/mean(response))
+#' \item prior_sigma_prob: 0.1
+#' \item prior_iideffect_sd_max: 0.1
+#' \item prior_iideffect_sd_prob: 0.01
+#' }
 #' 
 #' The \emph{family} and \emph{link} arguments are used to specify the likelihood and link function respectively. 
 #' The likelihood function can be one of \emph{gaussian}, \emph{poisson} or \emph{binomial}. 
@@ -330,7 +344,13 @@ make_model_object <- function(data,
   n_s <- nrow(spde$M0)
   
   cov_matrix <- as.matrix(data$covariate_data[, -c(1:2)])
-  cov_matrix <- t(apply(cov_matrix, 1,as.numeric))
+  # If we have exactly one column we don't have to transpose. Sure this 
+  #   this could be cleaner but I don't know how.
+  if(ncol(cov_matrix) == 1){
+    cov_matrix <- as.matrix(apply(cov_matrix, 1, as.numeric))
+  } else {
+    cov_matrix <- t(apply(cov_matrix, 1, as.numeric))
+  }
   
   # Construct sensible default field hyperpriors
   limits <- sp::bbox(data$polygon_shapefile)
@@ -340,8 +360,8 @@ make_model_object <- function(data,
   prior_sigma <- sd(data$polygon_data$response/mean(data$polygon_data$response))
   
   # Default priors if they are not specified
-  default_priors <- list(priormean_intercept = -4.0,
-                         priorsd_intercept = 2.0,
+  default_priors <- list(priormean_intercept = 0,
+                         priorsd_intercept = 10.0,
                          priormean_slope = 0.0,
                          priorsd_slope = 0.5,
                          prior_rho_min = prior_rho,

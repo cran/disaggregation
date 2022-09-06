@@ -46,7 +46,7 @@ And then aggregates these predictions to the polygon level using the weighted su
 \deqn{cases_j = \sum_{i \epsilon j} pred_i \times agg_i}{ casesj = \sum (predi x aggi)}
 \deqn{rate_j = \frac{\sum_{i \epsilon j} pred_i \times agg_i}{\sum_{i \epsilon j} agg_i}}{ratej = \sum(predi x aggi) / \sum (aggi)}
 
-The different likelihood correspond to slightly different models (\eqn{y_j}{yi} is the repsonse count data):
+The different likelihood correspond to slightly different models (\eqn{y_j}{yi} is the response count data):
 \itemize{
   \item Gaussian: 
    If \eqn{\sigma} is the dispersion of the pixel data, \eqn{\sigma_j}{\sigmaj} is the dispersion of the polygon data, where 
@@ -59,10 +59,24 @@ The different likelihood correspond to slightly different models (\eqn{y_j}{yi} 
    \deqn{dpois(y_j, cases_j)}{dpois(yj, casesj)} - predicts incidence count.
 }
 
-Specify priors for the regression parameters, field and iid effect as a single list. Hyperpriors for the field 
+Specify priors for the regression parameters, field and iid effect as a single named list. Hyperpriors for the field 
 are given as penalised complexity priors you specify \eqn{\rho_{min}} and \eqn{\rho_{prob}} for the range of the field 
-where \eqn{P(\rho < \rho_{min}) = \rho_{prob}}, and \eqn{\sigma_{min}$ and $\sigma_{prob}} for the variation of the field 
-where \eqn{P(\sigma > \sigma_{min}) = \sigma_{prob}}. Also, specify pc priors for the iid effect
+where \eqn{P(\rho < \rho_{min}) = \rho_{prob}}, and \eqn{\sigma_{min}} and \eqn{\sigma_{prob}} for the variation of the field 
+where \eqn{P(\sigma > \sigma_{min}) = \sigma_{prob}}. Also, specify pc priors for the iid effect.
+
+The precise names and default values for these priors are:
+\itemize{
+\item priormean_intercept: 0
+\item priorsd_intercept: 10.0
+\item priormean_slope: 0.0
+\item priorsd_slope: 0.5
+\item prior_rho_min: A third the length of the diagonal of the bounding box.
+\item prior_rho_prob: 0.1
+\item prior_sigma_max: sd(response/mean(response))
+\item prior_sigma_prob: 0.1
+\item prior_iideffect_sd_max: 0.1
+\item prior_iideffect_sd_prob: 0.01
+}
 
 The \emph{family} and \emph{link} arguments are used to specify the likelihood and link function respectively. 
 The likelihood function can be one of \emph{gaussian}, \emph{poisson} or \emph{binomial}. 
