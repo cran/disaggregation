@@ -47,44 +47,44 @@ pop_raster <- rasterize(polygon_data, cov_stack, field = 'pop_per_cell')
 polygon_data <- rgeos::gBuffer(polygon_data, byid = TRUE, width = 0)
 
 ## ---- fig.show='hold', eval= isINLA-------------------------------------------
-data_for_model <- prepare_data(polygon_data,
-                               cov_stack,
-                               pop_raster,
-                               response_var = 'cases',
-                               id_var = 'censustract.FIPS',
-                               mesh.args = list(cut = 0.01,
-                                                offset = c(0.1, 0.5),
-                                                max.edge = c(0.1, 0.2),
-                                                resolution = 250),
-                               na.action = TRUE,
-                               ncores = 1)
+#  data_for_model <- prepare_data(polygon_data,
+#                                 cov_stack,
+#                                 pop_raster,
+#                                 response_var = 'cases',
+#                                 id_var = 'censustract.FIPS',
+#                                 mesh.args = list(cut = 0.01,
+#                                                  offset = c(0.1, 0.5),
+#                                                  max.edge = c(0.1, 0.2),
+#                                                  resolution = 250),
+#                                 na.action = TRUE,
+#                                 ncores = 1)
 
 ## ---- fig.show='hold', eval= isINLA-------------------------------------------
-plot(data_for_model)
+#  plot(data_for_model)
 
 ## ---- fig.show='hold', eval=isINLA--------------------------------------------
-model_result <- disag_model(data_for_model,
-                            iterations = 1000,
-                            family = 'poisson',
-                            link = 'log',
-                            priors = list(priormean_intercept = 0,
-                                          priorsd_intercept = 2,
-                                          priormean_slope = 0.0,
-                                          priorsd_slope = 0.4,
-                                          prior_rho_min = 3,
-                                          prior_rho_prob = 0.01,
-                                          prior_sigma_max = 1,
-                                          prior_sigma_prob = 0.01,
-                                          prior_iideffect_sd_max = 0.05,
-                                          prior_iideffect_sd_prob = 0.01))
+#  model_result <- disag_model(data_for_model,
+#                              iterations = 1000,
+#                              family = 'poisson',
+#                              link = 'log',
+#                              priors = list(priormean_intercept = 0,
+#                                            priorsd_intercept = 2,
+#                                            priormean_slope = 0.0,
+#                                            priorsd_slope = 0.4,
+#                                            prior_rho_min = 3,
+#                                            prior_rho_prob = 0.01,
+#                                            prior_sigma_max = 1,
+#                                            prior_sigma_prob = 0.01,
+#                                            prior_iideffect_sd_max = 0.05,
+#                                            prior_iideffect_sd_prob = 0.01))
 
 ## ---- fig.show='hold', eval=isINLA--------------------------------------------
-plot(model_result)
+#  plot(model_result)
 
 ## ---- fig.show='hold', eval=isINLA--------------------------------------------
-preds <- predict(model_result, 
-                 N = 100, 
-                 CI = 0.95)
-
-plot(preds)
+#  preds <- predict(model_result,
+#                   N = 100,
+#                   CI = 0.95)
+#  
+#  plot(preds)
 
