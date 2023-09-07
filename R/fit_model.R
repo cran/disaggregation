@@ -163,6 +163,8 @@ disag_model <- function(data,
   message('Fitting model. This may be slow.')
   opt <- stats::nlminb(obj$par, obj$fn, obj$gr, control = list(iter.max = iterations, trace = 0))
   
+  if(opt$convergence != 0) warning('The model did not converge. Try increasing the number of iterations')
+  
   # Get hess control parameters into a list.
   hess_control <- setup_hess_control(opt, hess_control_parscale, hess_control_ndeps)
   
@@ -172,12 +174,12 @@ disag_model <- function(data,
   # Calc uncertainty using the fixed hessian from above.
   sd_out <- TMB::sdreport(obj, getJointPrecision = TRUE, hessian.fixed = hess)
 
-  message('Fitting model. This may be slow.')
-  opt <- stats::nlminb(obj$par, obj$fn, obj$gr, control = list(iter.max = iterations, trace = 0))
   
   sd_out <- TMB::sdreport(obj, getJointPrecision = TRUE)
   
-  if(opt$convergence != 0) warning('The model did not converge. Try increasing the number of iterations')
+  # Rename parameters to match layers
+  # Need to change in sd_out as well
+  # names(opt$par)[names(opt$par) == 'slope'] <- names(data$covariate_rasters)
   
   model_output <- list(obj = obj,
                        opt = opt,
@@ -332,7 +334,7 @@ make_model_object <- function(data,
   }
   
   if(family == 'gaussian' & iid) {
-    warning('You are using both a gaussian likeihood and an iid effect. Using both of these is redundant as they are 
+    warning('You are using both a gaussian likelihood and an iid effect. Using both of these is redundant as they are 
             having the same effect on the model. Consider setting iid = FALSE.')
   }
   

@@ -65,11 +65,23 @@ plot.disag_model <- function(x, ...){
   posteriors <- as.data.frame(summary(x$sd_out, select = 'fixed'))
   posteriors <- dplyr::mutate(posteriors, name = rownames(posteriors))
   names(posteriors) <- c('mean', 'sd', 'parameter')
-
+  posteriors$fixed <- grepl('slope', posteriors$parameter)
+  posteriors$type <- ifelse(posteriors$fixed, 'Slope', 'Other')
+  
+  # Check name lengths match before substituting.
+  lengths_match <- raster::nlayers(x$data$covariate_rasters) == sum(posteriors$fixed)
+  if(lengths_match){
+    posteriors$parameter[grepl('slope', posteriors$parameter)] <- names(x$data$covariate_rasters)
+  }
+  
   fixedeffects <- ggplot() + 
-    geom_errorbar(posteriors, mapping = aes(x = parameter, ymin = mean - sd, ymax = mean + sd), width = 0.2, color = "blue") + 
+    geom_errorbar(posteriors, mapping = aes(x = parameter, ymin = mean - sd, 
+                                            ymax = mean + sd), 
+                  width = 0.2, color = "blue") + 
     geom_point(posteriors, mapping = aes(x = parameter, y = mean)) + 
-    ggtitle("Fixed effects")
+    facet_wrap( ~ type , scales = 'free') + 
+    coord_flip() +
+    ggtitle("Parameters (excluding random effects)")
   
   report <- x$obj$report()
   
@@ -142,22 +154,19 @@ plot.disag_prediction <- function(x, ...) {
 plot_polygon_data <- function(x, names) {
 
   # Rename the response variable for plotting
-  shp <- x
-  shp@data <- dplyr::rename(shp@data, 'response' = names$response_var)
-  shp@data <- dplyr::rename(shp@data, 'area_id' = names$id_var)
+  shp <- sf::st_as_sf(x)
+  shp <- dplyr::rename(shp, 'response' = names$response_var)
+  shp <- dplyr::rename(shp, 'area_id' = names$id_var)
   
   area_id <- long <- lat <- group <- response <- NULL
-  stopifnot(inherits(shp, 'SpatialPolygonsDataFrame'))
+  stopifnot(inherits(shp, 'sf'))
   
-  df_fortify <- fortify(shp, region = 'area_id')
-  
-  df <- shp@data
-  df <- dplyr::mutate(df, area_id = as.character(area_id)) 
-  df <- dplyr::left_join(df_fortify, df, by = c('id' = 'area_id'))
-  
-  p <- ggplot(df, aes(long, lat, group = group, fill = response)) + 
-    geom_polygon() +
-    coord_equal() +
+
+  shp <- dplyr::mutate(shp, area_id = as.character(area_id)) 
+
+  p <- ggplot(shp, aes(fill = response)) + 
+    geom_sf() +
+    #coord_equal() +
     scale_fill_viridis_c(trans = 'identity')
   
   return(invisible(p))
@@ -209,20 +218,22 @@ plot_mesh <- function(x, main = '', col = 'blue', lwd = 0.5, linecol = 'darkgrey
   
   segments <- rbind(segments, innerouter)
   
-  
+  #size = .data$type
   p <- ggplot2::ggplot(data = d, 
-                       ggplot2::aes_string('x', 'y', 
-                                           colour = 'type', 
-                                           size = 'type')) +
+                       ggplot2::aes(.data$x, .data$y, 
+                                           colour = .data$type)) +
     ggplot2::geom_segment(data = segments, 
-                          ggplot2::aes_string(x = 'x1', y = 'y1', xend = 'x2', yend = 'y2')) +
-    ggplot2::geom_point() +
+                          ggplot2::aes(x = .data$x1, y = .data$y1, 
+                                       xend = .data$x2, yend = .data$y2,
+                                       linewidth = .data$type)) +
+    ggplot2::geom_point(aes(size = .data$type)) +
     ggplot2::theme_minimal() +
     ggplot2::theme(legend.position = 'none')
   #stroke
   p <- p +
     ggplot2::scale_colour_manual(values = c(col, linecol, 'black', 'black', 'black'), drop = FALSE) +
     ggplot2::scale_size_manual(values = c(size, lwd, 1.3, 1.3, 0), drop = FALSE) +
+    ggplot2::scale_linewidth_manual(values = c(size, lwd, 1.3, 1.3, 0), drop = FALSE) +
     ggtitle(main)
   
   return(invisible(p))

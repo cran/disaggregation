@@ -39,7 +39,21 @@ test_that("Check predict.disag_model function works as expected", {
   skip_if_not_installed('INLA')
   skip_on_cran()
   
-  result <- disag_model(test_data, iterations = 2)
+  result <- disag_model(test_data, iterations = 1000,
+                        iid = TRUE,
+                        field = TRUE,
+                        family = 'poisson',
+                        link = 'log',
+                        priors = list(priormean_intercept = 0,
+                                      priorsd_intercept = 0.1,
+                                      priormean_slope = 0.0,
+                                      priorsd_slope = 0.1,
+                                      prior_rho_min = 5,
+                                      prior_rho_prob = 0.01,
+                                      prior_sigma_max = 0.1,
+                                      prior_sigma_prob = 0.01,
+                                      prior_iideffect_sd_max = 0.0001,
+                                      prior_iideffect_sd_prob = 0.01))
 
   pred2 <- predict(result)
   
@@ -87,7 +101,7 @@ test_that("Check predict.disag_model function works as expected", {
   
   # For a model with no field or iid
   
-  result <- disag_model(test_data, iterations = 2, field = FALSE, iid = FALSE)
+  result <- disag_model(test_data, iterations = 100, field = FALSE, iid = FALSE)
   
   pred2 <- predict(result)
   
@@ -119,7 +133,17 @@ test_that("Check predict.disag_model function works with newdata", {
   skip_if_not_installed('INLA')
   skip_on_cran()
   
-  result <- disag_model(test_data, field = FALSE, iid = TRUE, iterations = 2)
+  result <- disag_model(test_data, field = FALSE, iid = TRUE, iterations = 100,
+                        priors = list(priormean_intercept = 0,
+                                      priorsd_intercept = 1,
+                                      priormean_slope = 0.0,
+                                      priorsd_slope = 0.4,
+                                      prior_rho_min = 1,
+                                      prior_rho_prob = 0.01,
+                                      prior_sigma_max = 0.1,
+                                      prior_sigma_prob = 0.01,
+                                      prior_iideffect_sd_max = 0.0001,
+                                      prior_iideffect_sd_prob = 0.01))
   
   newdata <- raster::crop(raster::stack(r, r2), c(0, 10, 0, 10))
   pred1 <- predict(result)
@@ -155,7 +179,7 @@ test_that('Check that check_newdata works', {
   skip_if_not_installed('INLA')
   skip_on_cran()
   
-  result <- disag_model(test_data, field = FALSE, iterations = 2)
+  result <- disag_model(test_data, field = FALSE, iterations = 100)
   
   newdata <- raster::crop(raster::stack(r, r2), c(0, 10, 0, 10))
   nd1 <- check_newdata(newdata, result)
@@ -180,7 +204,19 @@ test_that('Check that setup_objects works', {
   skip_if_not_installed('INLA')
   skip_on_cran()
   
-  result <- disag_model(test_data, iterations = 2)
+  result <- disag_model(test_data, iterations = 100,
+                        iid = TRUE,
+                        field = TRUE,
+                        priors = list(priormean_intercept = 0,
+                                      priorsd_intercept = 1,
+                                      priormean_slope = 0.0,
+                                      priorsd_slope = 0.4,
+                                      prior_rho_min = 1,
+                                      prior_rho_prob = 0.01,
+                                      prior_sigma_max = 0.1,
+                                      prior_sigma_prob = 0.01,
+                                      prior_iideffect_sd_max = 0.01,
+                                      prior_iideffect_sd_prob = 0.01))
   
   objects <- setup_objects(result)
   
@@ -214,7 +250,19 @@ test_that('Check that predict_single_raster works', {
   skip_if_not_installed('INLA')
   skip_on_cran()
   
-  result <- disag_model(test_data, iterations = 2)
+  result <- disag_model(test_data, iterations = 100,
+                        iid = TRUE,
+                        field = TRUE,
+                        priors = list(priormean_intercept = 0,
+                                      priorsd_intercept = 1,
+                                      priormean_slope = 0.0,
+                                      priorsd_slope = 0.4,
+                                      prior_rho_min = 1,
+                                      prior_rho_prob = 0.01,
+                                      prior_sigma_max = 0.1,
+                                      prior_sigma_prob = 0.01,
+                                      prior_iideffect_sd_max = 0.01,
+                                      prior_iideffect_sd_prob = 0.01))
   
   objects <- setup_objects(result)
   
