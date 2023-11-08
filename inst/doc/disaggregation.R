@@ -13,53 +13,67 @@ isINLA <- requireNamespace('INLA', quietly = TRUE)
 ## -----------------------------------------------------------------------------
 library(SpatialEpi, quietly = TRUE)
 library(dplyr, quietly = TRUE)
-library(sp, quietly = TRUE) 
-library(raster, quietly = TRUE)
 library(disaggregation, quietly = TRUE)
+library(ggplot2)
 library(sf)
+library(terra)
 
-map <- NYleukemia$spatial.polygon
-df <- NYleukemia$data
+polygons <- sf::st_as_sf(NYleukemia$spatial.polygon)
 
-polygon_data <- SpatialPolygonsDataFrame(map, df)
-polygon_data
+df <- cbind(polygons, NYleukemia$data)
+
+
+ggplot() + geom_sf(data = df, aes(fill = cases / population)) + scale_fill_viridis_c(lim = c(0, 0.003))
+
 
 ## ---- fig.show='hold'---------------------------------------------------------
-extent_in_km <- 111*(polygon_data@bbox[, 2] - polygon_data@bbox[, 1])
+
+bbox <- sf::st_bbox(df)
+
+extent_in_km <- 111*(bbox[c(3, 4)] - bbox[c(1, 2)])
 n_pixels_x <- floor(extent_in_km[[1]])
 n_pixels_y <- floor(extent_in_km[[2]])
-r <- raster::raster(ncol = n_pixels_x, nrow = n_pixels_y)
-r <- raster::setExtent(r, raster::extent(polygon_data))
-r[] <- sapply(1:raster::ncell(r), function(x) rnorm(1, ifelse(x %% n_pixels_x != 0, x %% n_pixels_x, n_pixels_x), 3))
-r2 <- raster::raster(ncol = n_pixels_x, nrow = n_pixels_y)
-r2 <- raster::setExtent(r2, raster::extent(polygon_data))
-r2[] <- sapply(1:raster::ncell(r), function(x) rnorm(1, ceiling(x/n_pixels_y), 3))
-cov_stack <- raster::stack(r, r2)
-cov_stack <- raster::scale(cov_stack)
+
+r <- terra::rast(ncols = n_pixels_x, nrows = n_pixels_y)
+terra::ext(r) <- terra::ext(df)
+
+data_generate <- function(x){
+  rnorm(1, ifelse(x %% n_pixels_x != 0, x %% n_pixels_x, n_pixels_x), 3)
+}
+
+terra::values(r) <- sapply(seq(terra::ncell(r)), data_generate)
+r2 <- terra::rast(ncol = n_pixels_x, nrow = n_pixels_y)
+terra::ext(r2) <- terra::ext(df)
+terra::values(r2) <- sapply(seq(terra::ncell(r2)), 
+                     function(x) rnorm(1, ceiling(x/n_pixels_y), 3))
+
+
+cov_stack <- terra::rast(list(r, r2))
+cov_stack <- terra::scale(cov_stack)
+names(cov_stack) <- c('layer1', 'layer2')
+
 
 ## ---- fig.show='hold'---------------------------------------------------------
-extracted <- raster::extract(r, polygon_data)
-n_cells <- sapply(extracted, length)
-polygon_data@data$pop_per_cell <- polygon_data@data$population/n_cells
-pop_raster <- rasterize(polygon_data, cov_stack, field = 'pop_per_cell')
+extracted <- terra::extract(r, terra::vect(df$geometry), fun = sum)
+n_cells <- terra::extract(r, terra::vect(df$geometry), fun = length)
+df$pop_per_cell <- df$population/n_cells$lyr.1
+pop_raster <- terra::rasterize(terra::vect(df), cov_stack, field = 'pop_per_cell')
 
 
 ## ---- fig.show='hold'---------------------------------------------------------
-polygon_data <- sf:::as_Spatial(st_buffer(st_as_sf(polygon_data), dist = 0))
-
+df <- sf::st_buffer(df, dist = 0)
 
 ## ---- fig.show='hold', eval= isINLA-------------------------------------------
-data_for_model <- prepare_data(polygon_data,
-                               cov_stack,
-                               pop_raster,
+data_for_model <- prepare_data(polygon_shapefile = df,
+                               covariate_rasters = cov_stack,
+                               aggregation_raster = pop_raster,
                                response_var = 'cases',
                                id_var = 'censustract.FIPS',
                                mesh.args = list(cut = 0.01,
                                                 offset = c(0.1, 0.5),
                                                 max.edge = c(0.1, 0.2),
                                                 resolution = 250),
-                               na.action = TRUE,
-                               ncores = 1)
+                               na.action = TRUE)
 
 ## ---- fig.show='hold', eval= isINLA-------------------------------------------
 plot(data_for_model)
