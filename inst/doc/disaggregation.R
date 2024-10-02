@@ -7,9 +7,6 @@ knitr::opts_chunk$set(
   eval = TRUE
 )
 
-## ---- echo = FALSE, eval = TRUE-----------------------------------------------
-isINLA <- requireNamespace('INLA', quietly = TRUE)
-
 ## -----------------------------------------------------------------------------
 library(SpatialEpi, quietly = TRUE)
 library(dplyr, quietly = TRUE)
@@ -26,7 +23,7 @@ df <- cbind(polygons, NYleukemia$data)
 ggplot() + geom_sf(data = df, aes(fill = cases / population)) + scale_fill_viridis_c(lim = c(0, 0.003))
 
 
-## ---- fig.show='hold'---------------------------------------------------------
+## ----fig.show='hold'----------------------------------------------------------
 
 bbox <- sf::st_bbox(df)
 
@@ -53,32 +50,32 @@ cov_stack <- terra::scale(cov_stack)
 names(cov_stack) <- c('layer1', 'layer2')
 
 
-## ---- fig.show='hold'---------------------------------------------------------
+## ----fig.show='hold'----------------------------------------------------------
 extracted <- terra::extract(r, terra::vect(df$geometry), fun = sum)
 n_cells <- terra::extract(r, terra::vect(df$geometry), fun = length)
 df$pop_per_cell <- df$population/n_cells$lyr.1
 pop_raster <- terra::rasterize(terra::vect(df), cov_stack, field = 'pop_per_cell')
 
 
-## ---- fig.show='hold'---------------------------------------------------------
+## ----fig.show='hold'----------------------------------------------------------
 df <- sf::st_buffer(df, dist = 0)
 
-## ---- fig.show='hold', eval= isINLA-------------------------------------------
+## ----fig.show='hold'----------------------------------------------------------
 data_for_model <- prepare_data(polygon_shapefile = df,
                                covariate_rasters = cov_stack,
                                aggregation_raster = pop_raster,
                                response_var = 'cases',
                                id_var = 'censustract.FIPS',
-                               mesh.args = list(cut = 0.01,
+                               mesh_args = list(cutoff = 0.01,
                                                 offset = c(0.1, 0.5),
                                                 max.edge = c(0.1, 0.2),
                                                 resolution = 250),
-                               na.action = TRUE)
+                               na_action = TRUE)
 
-## ---- fig.show='hold', eval= isINLA-------------------------------------------
+## ----fig.show='hold'----------------------------------------------------------
 plot(data_for_model)
 
-## ---- fig.show='hold', eval=isINLA--------------------------------------------
+## ----fig.show='hold'----------------------------------------------------------
 model_result <- disag_model(data_for_model,
                             iterations = 1000,
                             family = 'poisson',
@@ -94,10 +91,10 @@ model_result <- disag_model(data_for_model,
                                           prior_iideffect_sd_max = 0.05,
                                           prior_iideffect_sd_prob = 0.01))
 
-## ---- fig.show='hold', eval=isINLA--------------------------------------------
+## ----fig.show='hold'----------------------------------------------------------
 plot(model_result)
 
-## ---- fig.show='hold', eval=isINLA--------------------------------------------
+## ----fig.show='hold'----------------------------------------------------------
 preds <- predict(model_result, 
                  N = 100, 
                  CI = 0.95)
