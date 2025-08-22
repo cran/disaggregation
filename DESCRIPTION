@@ -1,7 +1,7 @@
 Package: disaggregation
 Type: Package
 Title: Disaggregation Modelling
-Version: 0.4.0
+Version: 0.4.1
 Authors@R: c(
     person("Anita", "Nandi", email = "anita.k.nandi@gmail.com", role = "aut", comment = c(ORCID = "0000-0002-5087-2494")),
     person("Tim", "Lucas", email =  "timcdlucas@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-4694-8107")),
@@ -24,12 +24,12 @@ LinkingTo: TMB, RcppEigen
 SystemRequirements: GNU make
 VignetteBuilder: knitr
 NeedsCompilation: yes
-Packaged: 2024-10-02 16:23:34 UTC; simon
-Author: Anita Nandi [aut] (<https://orcid.org/0000-0002-5087-2494>),
-  Tim Lucas [aut, cre] (<https://orcid.org/0000-0003-4694-8107>),
+Packaged: 2025-08-22 09:51:10 UTC; simon
+Author: Anita Nandi [aut] (ORCID: <https://orcid.org/0000-0002-5087-2494>),
+  Tim Lucas [aut, cre] (ORCID: <https://orcid.org/0000-0003-4694-8107>),
   Rohan Arambepola [aut],
-  Andre Python [aut] (<https://orcid.org/0000-0001-8094-7226>),
+  Andre Python [aut] (ORCID: <https://orcid.org/0000-0001-8094-7226>),
   Simon Smart [ctb]
 Maintainer: Tim Lucas <timcdlucas@gmail.com>
 Repository: CRAN
-Date/Publication: 2024-10-02 20:40:03 UTC
+Date/Publication: 2025-08-22 10:30:02 UTC

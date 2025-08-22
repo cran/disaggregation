@@ -1,7 +1,7 @@
-c58e7d70a0cce7f627240754229354fb *DESCRIPTION
+4fbd435d34ed1412089ac3ee547d4ab3 *DESCRIPTION
 372f8595a574b0321c96de4580667a08 *LICENSE
 1a7bed5961e157a4bc3b77675695cb0f *NAMESPACE
-d5850f969662b41b00f808df7c150aae *R/build_mesh.R
+33ce23ebfc624836add22ec337400db2 *R/build_mesh.R
 2978e0689f50b6c17dd36a668a3cc53e *R/extract.R
 ee12d0c98491a61e3feae40cd10bc8c0 *R/fit_model.R
 b4cfecfb0e5c99e561bee5a610355e85 *R/matching.R
@@ -10,11 +10,11 @@ cde56fdf636b44bb9452f44ae1c9d5ab *R/predict.R
 f8d42988464bbe954aecaee7a7f3d6e1 *R/prepare_data.R
 75a3b72b3875e90f37a098799f6d0ff8 *R/roxygentags.R
 48cf65632a9d0cd9e14860af1ed3ddca *R/summary.R
-46f9ebe6de740e0c1fa26c4c1f53febc *build/vignette.rds
+58a30a6f1dd5c9a91704b7722b6f42e3 *build/vignette.rds
 6b24057d5cb343968cc57fbf8eb23698 *inst/CITATION
 f4916436acb01162d5e5426fe0d1e36d *inst/doc/disaggregation.R
 46aedb9402331c04887f680146bf1557 *inst/doc/disaggregation.Rmd
-5d3eb844cdd89ac72024674e6e20b3a9 *inst/doc/disaggregation.html
+53f145b7266198cfe5a8a6906a1a82ef *inst/doc/disaggregation.html
 7e72fe613d486709f2287e25fc99362d *man/as.disag_data.Rd
 9ba5b8894f88f330b943459d9416b637 *man/build_mesh.Rd
 33beb75c12341e116b041340d5103393 *man/disag_model.Rd

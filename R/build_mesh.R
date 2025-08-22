@@ -77,7 +77,7 @@ build_mesh <- function(shapes, mesh_args = NULL, mesh.args = NULL) {
 
   coords <- sf::st_coordinates(outline)[, c('X', 'Y')]
 
-  outline.hull <- fmesher::fm_nonconvex_hull_inla(coords,
+  outline.hull <- fmesher::fm_nonconvex_hull(coords,
                                             convex = pars$convex,
                                             concave = pars$concave,
                                             resolution = pars$resolution)
